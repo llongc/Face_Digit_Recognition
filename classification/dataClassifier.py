@@ -22,7 +22,11 @@ DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
 FACE_DATUM_WIDTH=60
 FACE_DATUM_HEIGHT=70
-
+DIVIDE = 1
+CLASSDIV = 1
+# print CLASSDIV
+CLASS = (DIVIDE * DIVIDE / CLASSDIV if DIVIDE * DIVIDE % CLASSDIV == 0 else DIVIDE * DIVIDE / CLASSDIV + 1) + 1
+print CLASS
 
 def basicFeatureExtractorDigit(datum):
   """
@@ -69,11 +73,23 @@ def enhancedFeatureExtractorDigit(datum):
   """
   # features =  basicFeatureExtractorDigit(datum)
   features = util.Counter()
+  xd = DIGIT_DATUM_WIDTH // DIVIDE
+  if DIGIT_DATUM_WIDTH % DIVIDE != 0:
+      xd += 1
+  yd = DIGIT_DATUM_WIDTH // DIVIDE
+  if DIGIT_DATUM_WIDTH % DIVIDE != 0:
+      yd += 1
+  for i in range(xd):
+      for j in range(yd):
+          features['area'+str(i)+str(j)] = 0
   for x in range(DIGIT_DATUM_WIDTH):
       for y in range(DIGIT_DATUM_HEIGHT):
           if datum.getPixel(x, y) > 0:
               # features['allblack'] += 1
-              features['area'+str(x // 7)+str(y // 7)] += 1
+              features['area'+str(x // DIVIDE)+str(y // DIVIDE)] += 1
+  for f in features:
+      if features[f] != 0:
+          features[f] = features[f] // CLASSDIV if features[f] % CLASSDIV == 0 else features[f] // CLASSDIV + 1
 
   # print features
   return features
@@ -337,6 +353,8 @@ def runClassifier(args, options):
   print "Validating..."
   guesses = classifier.classify(validationData)
   correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+  print guesses
+  print validationLabels
   print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
   print "Testing..."
   guesses = classifier.classify(testData)

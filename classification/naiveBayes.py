@@ -37,7 +37,10 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
 
     # might be useful in your code later...
     # this is a list of all features in the training set.
+
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
+    print self.features
+    print len(self.features)
     if (self.automaticTuning):
         kgrid = [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 50]
     else:
@@ -70,12 +73,14 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
         train_feature[i][0] = util.Counter()
         train_feature[i][1] = util.Counter()
         train_feature[i][2] = util.Counter()
+        train_feature[i][3] = util.Counter()
+        train_feature[i][4] = util.Counter()
         train_total[i] = util.Counter()
     # get the probability of P(y) and p(xi | y) from the features of training data and labels
     # train_label is for count of P(y)
     # train_feature is for count of P(xi | y)
     for i in range(len(trainingLabels)):
-        print trainingLabels[i]
+        # print trainingLabels[i]
         train_label[trainingLabels[i]] += 1
         for j in trainingData[i]:
             index = trainingData[i][j] // 10
@@ -85,27 +90,40 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     # total count for labels
     self.total_count = train_label
 
-    select_model = util.Counter()
-    for k in kgrid:
+    # select_model = util.Counter()
+    maxProb = None
+    maxAccur = 0
+    for kg in kgrid:
         prob_feature = {}
         for i in self.features:
             prob_feature[i] = {}
             prob_feature[i][0] = util.Counter()
             prob_feature[i][1] = util.Counter()
             prob_feature[i][2] = util.Counter()
-            for j in range(3):
+            prob_feature[i][3] = util.Counter()
+            prob_feature[i][4] = util.Counter()
+            for j in range(5):
                 for k in self.legalLabels:
                     # this is smoothing part
-                    prob_feature[i][j][k] = (train_feature[i][j][k] + k) / (train_total[i][k] + 3 * k)
+                    # print "k is ", kg
+                    prob_feature[i][j][k] = float((train_feature[i][j][k] + kg)) / (train_total[i][k] + 3 * kg)
+                    if prob_feature[i][j][k] == 0.0:
+                        print "Warning!!!!!!!!!!!!!!!!!!"
+                        print i, j, k
         self.prob = prob_feature
-        guess = classify(validationData)
+        guess = self.classify(validationData)
         accurate = 0
         for i in range(len(validationLabels)):
             if validationLabels[i] == guess[i]:
                 accurate += 1
-        select_model[k] = accurate / len(validationLabels)
+        if (float(accurate) / len(validationLabels)) > maxAccur:
+            maxAccur = float(accurate) / len(validationLabels)
+            maxProb = self.prob
+            self.k = kg
+    self.prob = maxProb
+    print "finish learning"
 
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
 
 
 
@@ -135,10 +153,20 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.legalLabels.
     """
     logJoint = util.Counter()
+    # print self.prob
+
     for label in self.legalLabels:
-        logJoint[label] += math.log(self.total_count[label] / self.total_count.totalCount())
-        for feature in self.features:
-            logJoint[label] += math.log(self.prob[feature][label])
+        logJoint[label] += math.log( float(self.total_count[label]) / self.total_count.totalCount())
+        for fi in datum:
+            # print self.prob[fi]
+            fea = datum[fi] // 10
+            # print fi, fea, label
+            # print self.prob[fi][fea][label]
+            logJoint[label] += math.log(self.prob[fi][fea][label])
+
+    #     for feature in self.features:
+    #         print self.prob[feature][label]
+    #         logJoint[label] += math.log(self.prob[feature][label])
     # "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
 

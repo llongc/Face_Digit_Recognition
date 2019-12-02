@@ -73,7 +73,7 @@ def enhancedFeatureExtractorDigit(datum):
       for y in range(DIGIT_DATUM_HEIGHT):
           if datum.getPixel(x, y) > 0:
               # features['allblack'] += 1
-              features['area'+str(x // 5)+str(y // 5)] += 1
+              features['area'+str(x // 7)+str(y // 7)] += 1
 
   # print features
   return features

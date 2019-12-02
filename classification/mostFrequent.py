@@ -18,7 +18,7 @@ class MostFrequentClassifier(classificationMethod.ClassificationMethod):
   def __init__(self, legalLabels):
     self.guess = None
     self.type = "mostfrequent"
-  
+
   def train(self, data, labels, validationData, validationLabels):
     """
     Find the most common label in the training data.
@@ -26,9 +26,10 @@ class MostFrequentClassifier(classificationMethod.ClassificationMethod):
     counter = util.Counter()
     counter.incrementAll(labels, 1)
     self.guess = counter.argMax()
-  
+
   def classify(self, testData):
     """
     Classify all test data as the most common label.
     """
+    print self.guess
     return [self.guess for i in testData]

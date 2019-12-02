@@ -63,12 +63,14 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
 
     # initialize the counter
     train_label = util.Counter()
+    train_total = {}
     train_feature = {}
     for i in self.features:
         train_feature[i] = {}
         train_feature[i][0] = util.Counter()
         train_feature[i][1] = util.Counter()
         train_feature[i][2] = util.Counter()
+        train_total[i] = util.Counter()
     # get the probability of P(y) and p(xi | y) from the features of training data and labels
     # train_label is for count of P(y)
     # train_feature is for count of P(xi | y)
@@ -78,10 +80,34 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
         for j in trainingData[i]:
             index = trainingData[i][j] // 10
             train_feature[j][index][train_label[trainingLabels[i]]] += 1
-            # train_feature[trainingLabels[i]][j][index] += 1
-    util.raiseNotDefined()
+            train_total[j][train_label[trainingLabels[i]]] += 1
+
+    # total count for labels
+    self.total_count = train_label
+
     select_model = util.Counter()
-    # for i in kgrid:
+    for k in kgrid:
+        prob_feature = {}
+        for i in self.features:
+            prob_feature[i] = {}
+            prob_feature[i][0] = util.Counter()
+            prob_feature[i][1] = util.Counter()
+            prob_feature[i][2] = util.Counter()
+            for j in range(3):
+                for k in self.legalLabels:
+                    # this is smoothing part
+                    prob_feature[i][j][k] = (train_feature[i][j][k] + k) / (train_total[i][k] + 3 * k)
+        self.prob = prob_feature
+        guess = classify(validationData)
+        accurate = 0
+        for i in range(len(validationLabels)):
+            if validationLabels[i] == guess[i]:
+                accurate += 1
+        select_model[k] = accurate / len(validationLabels)
+
+    util.raiseNotDefined()
+
+
 
 
 
@@ -109,9 +135,12 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.legalLabels.
     """
     logJoint = util.Counter()
-
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for label in self.legalLabels:
+        logJoint[label] += math.log(self.total_count[label] / self.total_count.totalCount())
+        for feature in self.features:
+            logJoint[label] += math.log(self.prob[feature][label])
+    # "*** YOUR CODE HERE ***"
+    # util.raiseNotDefined()
 
     return logJoint
 

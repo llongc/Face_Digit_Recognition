@@ -453,7 +453,7 @@ def selfRunClassifier():
     print ""
     print "=================Faces===================="
     featureFunction = enhancedFeatureExtractorDigit
-    legalLabels = range(10)
+    legalLabels = range(2)
     classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
     for percent in data_percent:
         print '--------------------------------------------------------------'

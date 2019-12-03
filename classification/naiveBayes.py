@@ -40,8 +40,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     # this is a list of all features in the training set.
 
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
-    # print self.features
-    # print len(self.features)
+
     if (self.automaticTuning):
         kgrid = [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 50]
     else:
@@ -66,8 +65,11 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     "*** YOUR CODE HERE ***"
 
     # initialize the counter
+    # count how many for each label 0 - 9
     train_label = util.Counter()
+    # count the sum of possibilities for feature i based on result y
     train_total = {}
+    # count the possibilities for each feature i for each class based on result y
     train_feature = {}
     for i in self.features:
         train_feature[i] = {}
@@ -81,9 +83,12 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
         # print trainingLabels[i]
         train_label[trainingLabels[i]] += 1
         for j in trainingData[i]:
+            # print trainingLabels[i]
             # print j, trainingData[i][j], train_label[trainingLabels[i]]
-            train_feature[j][trainingData[i][j]][train_label[trainingLabels[i]]] += 1
-            train_total[j][train_label[trainingLabels[i]]] += 1
+            # print trainingLabels[i]
+            train_feature[j][trainingData[i][j]][trainingLabels[i]] += 1
+            train_total[j][trainingLabels[i]] += 1
+        # break
 
     # total count for labels
     self.total_count = train_label
@@ -101,7 +106,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
                 for k in self.legalLabels:
                     # this is smoothing part
                     # print "k is ", kg
-                    prob_feature[i][j][k] = float((train_feature[i][j][k] + kg)) / (train_total[i][k] + 3 * kg)
+                    prob_feature[i][j][k] = float((train_feature[i][j][k] + kg)) / (train_total[i][k] + dataClassifier.CLASS * kg)
         self.prob = prob_feature
         guess = self.classify(validationData)
         accurate = 0

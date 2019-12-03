@@ -17,7 +17,8 @@ import samples
 import sys
 import util
 
-TEST_SET_SIZE = 100
+TEST_SET_SIZE = 10 # It is indeed the percent for test dataset, default is 10%
+
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
 FACE_DATUM_WIDTH=60
@@ -86,10 +87,17 @@ def enhancedFeatureExtractorDigit(datum):
       for y in range(DIGIT_DATUM_HEIGHT):
           if datum.getPixel(x, y) > 0:
               # features['allblack'] += 1
-              features['area'+str(x // DIVIDE)+str(y // DIVIDE)] += 1
+              if CLASS == 2:
+                  features['area'+str(x // DIVIDE)+str(y // DIVIDE)] = 1
+              else:
+                  features['area'+str(x // DIVIDE)+str(y // DIVIDE)] += 1
+
   for f in features:
       if features[f] != 0:
-          features[f] = features[f] // CLASSDIV if features[f] % CLASSDIV == 0 else features[f] // CLASSDIV + 1
+          tmp = features[f] // CLASSDIV if features[f] % CLASSDIV == 0 else features[f] // CLASSDIV + 1
+          if tmp >= 2:
+              print f, features[f], CLASSDIV
+          features[f] = tmp
 
   # print features
   return features
@@ -143,8 +151,8 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
   for i in range(len(guesses)):
       prediction = guesses[i]
       truth = testLabels[i]
-      print testData[0]
-      print rawTestData[0]
+      # print testData[0]
+      # print rawTestData[0]
       if (prediction != truth):
           print "==================================="
           print "Mistake on example %d" % i
@@ -224,7 +232,7 @@ def readCommand( argv ):
     print "using enhanced features?:\t" + str(options.features)
   else:
     print "using minicontest feature extractor"
-  print "training set size:\t" + str(options.training)
+  print "training set size:\t" + str(options.training)+"%"
   if(options.data=="digits"):
     printImage = ImagePrinter(DIGIT_DATUM_WIDTH, DIGIT_DATUM_HEIGHT).printImage
     if (options.features):

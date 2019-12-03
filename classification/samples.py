@@ -108,8 +108,8 @@ def loadDataFile(filename, percent ,width,height):
   fin.reverse()
   items = []
   n = int(float(percent) / 100 * (len(fin) / height))
-  print "============"
-  print n, len(fin)
+  # print "============"
+  # print n, len(fin)
   selectnum = len(fin) / height
   randIndex = random.sample(range(selectnum), n)
   randIndex.sort()
@@ -145,9 +145,9 @@ def loadLabelsFile(filename, percent):
   """
   fin = readlines(filename)
   labels = []
-  print "===!!!!"
+  # print "===!!!!"
   n = int(float(percent) / 100 * len(fin))
-  print n, len(fin)
+  # print n, len(fin)
   for line in fin[:len(fin)]:
     if line == '':
         break

@@ -16,6 +16,8 @@ import mira
 import samples
 import sys
 import util
+# from sklearn.metrics import accuracy_score
+
 
 TEST_SET_SIZE = 10 # It is indeed the percent for test dataset, default is 10%
 
@@ -23,8 +25,8 @@ DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
 FACE_DATUM_WIDTH=60
 FACE_DATUM_HEIGHT=70
-DIVIDE = 1
-CLASSDIV = 1
+DIVIDE = 5
+CLASSDIV = 10
 # print CLASSDIV
 CLASS = (DIVIDE * DIVIDE / CLASSDIV if DIVIDE * DIVIDE % CLASSDIV == 0 else DIVIDE * DIVIDE / CLASSDIV + 1) + 1
 print CLASS
@@ -77,9 +79,10 @@ def enhancedFeatureExtractorDigit(datum):
   xd = DIGIT_DATUM_WIDTH // DIVIDE
   if DIGIT_DATUM_WIDTH % DIVIDE != 0:
       xd += 1
-  yd = DIGIT_DATUM_WIDTH // DIVIDE
-  if DIGIT_DATUM_WIDTH % DIVIDE != 0:
+  yd = DIGIT_DATUM_HEIGHT // DIVIDE
+  if DIGIT_DATUM_HEIGHT % DIVIDE != 0:
       yd += 1
+
   for i in range(xd):
       for j in range(yd):
           features['area'+str(i)+str(j)] = 0
@@ -95,8 +98,8 @@ def enhancedFeatureExtractorDigit(datum):
   for f in features:
       if features[f] != 0:
           tmp = features[f] // CLASSDIV if features[f] % CLASSDIV == 0 else features[f] // CLASSDIV + 1
-          if tmp >= 2:
-              print f, features[f], CLASSDIV
+          # if tmp >= 2:
+              # print f, features[f], CLASSDIV
           features[f] = tmp
 
   # print features
@@ -115,14 +118,34 @@ def enhancedFeatureExtractorFace(datum):
   Your feature extraction playground for faces.
   It is your choice to modify this.
   """
-  features =  basicFeatureExtractorFace(datum)
   features = util.Counter()
+  xd = FACE_DATUM_WIDTH // DIVIDE
+  if FACE_DATUM_WIDTH % DIVIDE != 0:
+      xd += 1
+  yd = FACE_DATUM_HEIGHT // DIVIDE
+  if FACE_DATUM_HEIGHT % DIVIDE != 0:
+      yd += 1
+  # print xd, yd
+  for i in range(xd):
+      for j in range(yd):
+          features['area'+str(i)+str(j)] = 0
   for x in range(FACE_DATUM_WIDTH):
       for y in range(FACE_DATUM_HEIGHT):
           if datum.getPixel(x, y) > 0:
               # features['allblack'] += 1
-              features['area'+str(x // 5)+str(y // 5)] += 1
+              if CLASS == 2:
+                  features['area'+str(x // DIVIDE)+str(y // DIVIDE)] = 1
+              else:
+                  features['area'+str(x // DIVIDE)+str(y // DIVIDE)] += 1
 
+  for f in features:
+      if features[f] != 0:
+          tmp = features[f] // CLASSDIV if features[f] % CLASSDIV == 0 else features[f] // CLASSDIV + 1
+          if tmp >= 2:
+              print f, features[f], CLASSDIV
+          features[f] = tmp
+
+  # print features
   return features
 
 def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage):
@@ -146,23 +169,24 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
   (and you can modify the signature if you want).
   """
 
-  # Put any code here...
-  # Example of use:
-  for i in range(len(guesses)):
-      prediction = guesses[i]
-      truth = testLabels[i]
-      # print testData[0]
-      # print rawTestData[0]
-      if (prediction != truth):
-          print "==================================="
-          print "Mistake on example %d" % i
-          print "Predicted %d; truth is %d" % (prediction, truth)
-          print "Image: "
-          print rawTestData[i]
-          # printImage(rawTestData[i].getPixels())
-          # print rawTestData[i][0]
-          # printImage(rawTestData[i])
-          break
+
+  # # Put any code here...
+  # # Example of use:
+  # for i in range(len(guesses)):
+  #     prediction = guesses[i]
+  #     truth = testLabels[i]
+  #     # print testData[0]
+  #     # print rawTestData[0]
+  #     if (prediction != truth):
+  #         print "==================================="
+  #         print "Mistake on example %d" % i
+  #         print "Predicted %d; truth is %d" % (prediction, truth)
+  #         print "Image: "
+  #         print rawTestData[i]
+  #         # printImage(rawTestData[i].getPixels())
+  #         # print rawTestData[i][0]
+  #         # printImage(rawTestData[i])
+  #         break
 
 
 ## =====================
@@ -361,8 +385,8 @@ def runClassifier(args, options):
   print "Validating..."
   guesses = classifier.classify(validationData)
   correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-  print guesses
-  print validationLabels
+  # print guesses
+  # print validationLabels
   print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
   print "Testing..."
   guesses = classifier.classify(testData)
@@ -388,8 +412,80 @@ def runClassifier(args, options):
       print ("=== Features with high weight for label %d ==="%l)
       printImage(features_weights)
 
+def selfRunClassifier():
+    print "Doing classification"
+    print "--------------------"
+
+    data_percent = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # NaiveBayes part
+    print "Training by using NaiveBayes Algorithm"
+    print "=================Digits===================="
+    featureFunction = enhancedFeatureExtractorDigit
+    legalLabels = range(10)
+    classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
+    for percent in data_percent:
+        print '--------------------------------------------------------------'
+        print "training set size:\t" + str(percent)+"%"
+        rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+        trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
+        rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+        validationLabels = samples.loadLabelsFile("digitdata/validationlabels", TEST_SET_SIZE)
+        rawTestData = samples.loadDataFile("digitdata/testimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+        testLabels = samples.loadLabelsFile("digitdata/testlabels", TEST_SET_SIZE)
+        print "Extracting features..."
+        trainingData = map(featureFunction, rawTrainingData)
+        validationData = map(featureFunction, rawValidationData)
+        testData = map(featureFunction, rawTestData)
+        # Conduct training and testing
+        print "Training..."
+        classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+        print "Validating..."
+        guesses = classifier.classify(validationData)
+        correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+        # print guesses
+        # print validationLabels
+        print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
+        print "Testing..."
+        guesses = classifier.classify(testData)
+        correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+        print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
+        # analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
+    print ""
+    print "=================Faces===================="
+    featureFunction = enhancedFeatureExtractorDigit
+    legalLabels = range(10)
+    classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
+    for percent in data_percent:
+        print '--------------------------------------------------------------'
+        rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+        trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
+        rawValidationData = samples.loadDataFile("facedata/facedatatrain", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+        validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", TEST_SET_SIZE)
+        rawTestData = samples.loadDataFile("facedata/facedatatest", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+        testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", TEST_SET_SIZE)
+        print "Extracting features..."
+        trainingData = map(featureFunction, rawTrainingData)
+        validationData = map(featureFunction, rawValidationData)
+        testData = map(featureFunction, rawTestData)
+        # Conduct training and testing
+        print "Training..."
+        classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+        print "Validating..."
+        guesses = classifier.classify(validationData)
+        correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+        # print guesses
+        # print validationLabels
+        print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
+        print "Testing..."
+        guesses = classifier.classify(testData)
+        correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+        print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
+        # analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
+
+
 if __name__ == '__main__':
   # Read input
-  args, options = readCommand( sys.argv[1:] )
+  # args, options = readCommand( sys.argv[1:] )
   # Run classifier
-  runClassifier(args, options)
+  # runClassifier(args, options)
+  selfRunClassifier()

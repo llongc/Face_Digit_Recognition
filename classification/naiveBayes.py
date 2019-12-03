@@ -40,7 +40,8 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     # this is a list of all features in the training set.
 
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
-
+    # print self.features
+    print len(self.features)
     if (self.automaticTuning):
         kgrid = [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 50]
     else:
@@ -154,8 +155,11 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     for label in self.legalLabels:
         logJoint[label] += math.log( float(self.total_count[label]) / self.total_count.totalCount())
         for fi in datum:
+            # print fi, datum[fi], label, self.prob[fi], self.prob[fi][datum[fi]]
+            if fi not in self.prob:
+                print "@@@@@"
+                print fi, datum[fi]
             logJoint[label] += math.log(self.prob[fi][datum[fi]][label])
-
     # "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
 

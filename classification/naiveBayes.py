@@ -10,6 +10,7 @@ import util
 import classificationMethod
 import math
 import dataClassifier
+import timeit
 
 class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
   """
@@ -21,7 +22,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
   def __init__(self, legalLabels):
     self.legalLabels = legalLabels
     self.type = "naivebayes"
-    self.k = 1 # this is the smoothing parameter, ** use it in your train method **
+    self.k = 2 # this is the smoothing parameter, ** use it in your train method **
     self.automaticTuning = False # Look at this flag to decide whether to choose k automatically ** use this in your train method **
 
   def setSmoothing(self, k):
@@ -32,6 +33,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.k = k
 
   def train(self, trainingData, trainingLabels, validationData, validationLabels):
+    start_time = timeit.default_timer()
     """
     Outside shell to call your method. Do not modify this method.
     """
@@ -41,15 +43,18 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
 
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
     # print self.features
-    print len(self.features)
+    # print len(self.features)
     if (self.automaticTuning):
         kgrid = [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 50]
     else:
         kgrid = [self.k]
 
     self.trainAndTune(trainingData, trainingLabels, validationData, validationLabels, kgrid)
+    elapsed = timeit.default_timer() - start_time
+    return elapsed
 
   def trainAndTune(self, trainingData, trainingLabels, validationData, validationLabels, kgrid):
+
     """
     Trains the classifier by collecting counts over the training data, and
     stores the Laplace smoothed estimates so that they can be used to classify.
@@ -119,7 +124,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
             maxProb = self.prob
             self.k = kg
     self.prob = maxProb
-    print "finish learning"
+    # print "finish learning"
 
     # util.raiseNotDefined()
 

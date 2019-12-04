@@ -20,7 +20,7 @@ import numpy as np
 # from sklearn.metrics import accuracy_score
 
 
-TEST_SET_SIZE = 100 # It is indeed the percent for test dataset, default is 10%
+TEST_SET_SIZE = 10 # It is indeed the percent for test dataset, default is 10%
 
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
@@ -499,7 +499,7 @@ def selfRunClassifier():
 
 if __name__ == '__main__':
   # Read input
-  # args, options = readCommand( sys.argv[1:] )
+  args, options = readCommand( sys.argv[1:] )
   # Run classifier
-  # runClassifier(args, options)
-  selfRunClassifier()
+  runClassifier(args, options)
+  # selfRunClassifier()

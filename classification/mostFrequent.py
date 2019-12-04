@@ -9,6 +9,7 @@
 import util
 import classificationMethod
 import math
+import numpy as np
 
 
 class MostFrequentClassifier(classificationMethod.ClassificationMethod):
@@ -31,6 +32,7 @@ class MostFrequentClassifier(classificationMethod.ClassificationMethod):
     self.train = trainingData
     self.length = len(trainingData[0])
 
+
     # counter = util.Counter()
     # counter.incrementAll(labels, 1)
     # self.guess = counter.argMax()
@@ -43,7 +45,9 @@ class MostFrequentClassifier(classificationMethod.ClassificationMethod):
     """
     # print self.guess
     # return [self.guess for i in testData]
-    self.guess = []
+    self.guess = np.zeros(len(testData),dtype = int)
+    # print len(self.guess)
+    # print len(testData)
 
     for i in range(len(testData)):
         kmost = util.Counter()
@@ -55,13 +59,10 @@ class MostFrequentClassifier(classificationMethod.ClassificationMethod):
         sorted = count.sortedKeys()
         # print sorted
         sorted.reverse()
-        # print sorted
-        # print self.label
-        # print self.k
-        # print sorted[:self.k]
-        kmost.incrementAll([self.label[i] for i in sorted[:self.k]], 1)
+        kmost.incrementAll([self.label[a] for a in sorted[:self.k]], 1)
         # print kmost.argMax()
-        self.guess.append(kmost.argMax())
+        # print i
+        self.guess[i] = kmost.argMax()
     return self.guess
 
 

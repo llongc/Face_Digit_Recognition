@@ -12,7 +12,7 @@ import math
 import numpy as np
 
 
-class MostFrequentClassifier(classificationMethod.ClassificationMethod):
+class KnearestNeighbourClassifier(classificationMethod.ClassificationMethod):
   """
   The MostFrequentClassifier is a very simple classifier: for
   every test instance presented to it, the classifier returns

@@ -9,7 +9,7 @@
 # This file contains feature extraction methods and harness
 # code for data classification
 
-import mostFrequent
+import Knear
 import naiveBayes
 import perceptron
 import mira
@@ -20,7 +20,7 @@ import numpy as np
 # from sklearn.metrics import accuracy_score
 
 
-TEST_SET_SIZE = 10 # It is indeed the percent for test dataset, default is 10%
+TEST_SET_SIZE = 100 # It is indeed the percent for test dataset, default is 10%
 
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
@@ -217,7 +217,7 @@ def readCommand( argv ):
   from optparse import OptionParser
   parser = OptionParser(USAGE_STRING)
 
-  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest'], default='mostFrequent')
+  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['knear', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest'], default='knear')
   parser.add_option('-d', '--data', help=default('Dataset to use'), choices=['digits', 'faces'], default='digits')
   parser.add_option('-t', '--training', help=default('The size of the training set'), default=100, type="int")
   parser.add_option('-f', '--features', help=default('Whether to use enhanced features'), default=False, action="store_true")
@@ -284,8 +284,8 @@ def readCommand( argv ):
       print USAGE_STRING
       sys.exit(2)
 
-  if(options.classifier == "mostFrequent"):
-    classifier = mostFrequent.MostFrequentClassifier(legalLabels)
+  if(options.classifier == "knear"):
+    classifier = Knear.KnearestNeighbourClassifier(legalLabels)
   elif(options.classifier == "naiveBayes" or options.classifier == "nb"):
     classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
     classifier.setSmoothing(options.smoothing)
@@ -405,9 +405,11 @@ def selfRunClassifier():
     print "--------------------"
 
     data_percent = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    print "=================Digits===================="
+
+    
     # NaiveBayes part
     print "Training by using NaiveBayes Algorithm"
-    print "=================Digits===================="
     featureFunction = enhancedFeatureExtractorDigit
     legalLabels = range(10)
     classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
@@ -430,29 +432,67 @@ def selfRunClassifier():
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            # Conduct training and testing
-            # print "Training..."
             elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
             lst_time.append(elapse)
-            # print "Validating..."
-            # guesses = classifier.classify(validationData)
-            # correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-            # print guesses
-            # print validationLabels
-            # print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
-            # print "Testing..."
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
             lst_acc.append(float(correct) / len(testLabels))
         print '--------------------------------------------------------------'
-            # print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
         lst_avg_time.append(np.mean(lst_time))
         lst_avg_acc.append(np.mean(lst_acc))
         lst_std_acc.append(np.std(lst_acc))
-    # print lst_avg_time, lst_avg_acc, lst_std_acc
     analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+    # Percentron algorithm
+
+
+
+
+
+
+    # K nearest neighbour algorithm
+    print "Training by using KNN Algorithm"
+    featureFunction = enhancedFeatureExtractorDigit
+    legalLabels = range(10)
+    classifier = Knear.KnearestNeighbourClassifier(legalLabels)
+    lst_avg_time = []
+    lst_avg_acc = []
+    lst_std_acc = []
+    for percent in data_percent:
+        print "training set size:\t" + str(percent)+"%"
+        # print "setSmoothing: k value is ", classifier.k
+        lst_time = []
+        lst_acc = []
+        for i in range(5):
+            rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+            trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
+            rawValidationData = samples.loadDataFile("digitdata/validationimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+            validationLabels = samples.loadLabelsFile("digitdata/validationlabels", 10)
+            rawTestData = samples.loadDataFile("digitdata/testimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+            testLabels = samples.loadLabelsFile("digitdata/testlabels", 10)
+            # print "Extracting features..."
+            trainingData = map(featureFunction, rawTrainingData)
+            validationData = map(featureFunction, rawValidationData)
+            testData = map(featureFunction, rawTestData)
+            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            lst_time.append(elapse)
+            guesses = classifier.classify(testData)
+            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+            lst_acc.append(float(correct) / len(testLabels))
+        print '--------------------------------------------------------------'
+        lst_avg_time.append(np.mean(lst_time))
+        lst_avg_acc.append(np.mean(lst_acc))
+        lst_std_acc.append(np.std(lst_acc))
+    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+
+
+
+
+
+
     print ""
     print "=================Faces===================="
+    # NaiveBayes Algorithm
+    print "Training by using NaiveBayes Algorithm"
     featureFunction = enhancedFeatureExtractorDigit
     legalLabels = range(2)
     classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
@@ -470,22 +510,11 @@ def selfRunClassifier():
             validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", TEST_SET_SIZE)
             rawTestData = samples.loadDataFile("facedata/facedatatest", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
             testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", TEST_SET_SIZE)
-            # print "Extracting features..."
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            # Conduct training and testing
-            # print "Training..."
             elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
             lst_time.append(elapse)
-            # print "Validating..."
-            # guesses = classifier.classify(validationData)
-            # correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-
-            # print guesses
-            # print validationLabels
-            # print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
-            # print "Testing..."
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
             lst_acc.append(float(correct) / len(testLabels))
@@ -495,6 +524,45 @@ def selfRunClassifier():
         lst_std_acc.append(np.std(lst_acc))
     analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
+    # Perceptron Algorithm
+
+
+
+
+
+
+    # Knn Algorithm
+    print "Training by using KNN Algorithm"
+    featureFunction = enhancedFeatureExtractorDigit
+    legalLabels = range(2)
+    classifier = Knear.KnearestNeighbourClassifier(legalLabels)
+    lst_avg_time = []
+    lst_avg_acc = []
+    lst_std_acc = []
+    for percent in data_percent:
+        print "training set size:\t" + str(percent)+"%"
+        lst_time = []
+        lst_acc = []
+        for i in range(5):
+            rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+            trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
+            rawValidationData = samples.loadDataFile("facedata/facedatatrain", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+            validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", 10)
+            rawTestData = samples.loadDataFile("facedata/facedatatest", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+            testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", 10)
+            trainingData = map(featureFunction, rawTrainingData)
+            validationData = map(featureFunction, rawValidationData)
+            testData = map(featureFunction, rawTestData)
+            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            lst_time.append(elapse)
+            guesses = classifier.classify(testData)
+            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+            lst_acc.append(float(correct) / len(testLabels))
+        print '--------------------------------------------------------------'
+        lst_avg_time.append(np.mean(lst_time))
+        lst_avg_acc.append(np.mean(lst_acc))
+        lst_std_acc.append(np.std(lst_acc))
+    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
 
 if __name__ == '__main__':

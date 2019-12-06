@@ -10,27 +10,27 @@ import util
 import classificationMethod
 import math
 import numpy as np
+# import dataClassifier
+import timeit
 
 
 class KnearestNeighbourClassifier(classificationMethod.ClassificationMethod):
-  """
-  The MostFrequentClassifier is a very simple classifier: for
-  every test instance presented to it, the classifier returns
-  the label that was seen most often in the training data.
-  """
+
   def __init__(self, legalLabels):
     self.k = 5
     self.guess = None
-    self.type = "mostfrequent"
+    self.type = "knear"
 
   def train(self, trainingData, trainingLabels, validationData, validationLabels):
-    """
-    Find the most common label in the training data.
-    """
+
+    start_time = timeit.default_timer()
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
     self.label = trainingLabels
     self.train = trainingData
-    self.length = len(trainingData[0])
+    # self.length = len(trainingData[0])
+
+    elapsed = timeit.default_timer() - start_time
+    return elapsed
 
 
     # counter = util.Counter()

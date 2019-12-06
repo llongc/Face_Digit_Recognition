@@ -10,7 +10,7 @@ import util
 import classificationMethod
 import math
 import dataClassifier
-import timeit
+
 
 class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
   """
@@ -33,7 +33,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.k = k
 
   def train(self, trainingData, trainingLabels, validationData, validationLabels):
-    start_time = timeit.default_timer()
+    # start_time = timeit.default_timer()
     """
     Outside shell to call your method. Do not modify this method.
     """
@@ -50,8 +50,8 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
         kgrid = [self.k]
 
     self.trainAndTune(trainingData, trainingLabels, validationData, validationLabels, kgrid)
-    elapsed = timeit.default_timer() - start_time
-    return elapsed
+    # elapsed = timeit.default_timer() - start_time
+    # return elapsed
 
   def trainAndTune(self, trainingData, trainingLabels, validationData, validationLabels, kgrid):
 

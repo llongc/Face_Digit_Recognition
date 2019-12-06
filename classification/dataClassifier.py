@@ -17,10 +17,11 @@ import samples
 import sys
 import util
 import numpy as np
+import timeit
 # from sklearn.metrics import accuracy_score
 
 
-TEST_SET_SIZE = 100 # It is indeed the percent for test dataset, default is 10%
+TEST_SET_SIZE = 1 # It is indeed the percent for test dataset, default is 10%
 
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
@@ -365,11 +366,12 @@ def runClassifier(args, options):
   trainingData = map(featureFunction, rawTrainingData)
   validationData = map(featureFunction, rawValidationData)
   testData = map(featureFunction, rawTestData)
-
+  print len(trainingData)
+  print len(validationData)
+  print len(testData)
   # Conduct training and testing
   print "Training..."
   elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-  print elapse
   print "Validating..."
   guesses = classifier.classify(validationData)
   correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
@@ -407,7 +409,7 @@ def selfRunClassifier():
     data_percent = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     print "=================Digits===================="
 
-    
+
     # NaiveBayes part
     print "Training by using NaiveBayes Algorithm"
     featureFunction = enhancedFeatureExtractorDigit
@@ -422,6 +424,7 @@ def selfRunClassifier():
         lst_time = []
         lst_acc = []
         for i in range(5):
+            start_time = timeit.default_timer()
             rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
             trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
             rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
@@ -432,7 +435,8 @@ def selfRunClassifier():
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            elapse = timeit.default_timer() - start_time
             lst_time.append(elapse)
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
@@ -463,6 +467,7 @@ def selfRunClassifier():
         lst_time = []
         lst_acc = []
         for i in range(5):
+            start_time = timeit.default_timer()
             featureFunction = enhancedFeatureExtractorDigit
             legalLabels = range(10)
             classifier = Knear.KnearestNeighbourClassifier(legalLabels)
@@ -478,8 +483,9 @@ def selfRunClassifier():
             testData = map(featureFunction, rawTestData)
 
             classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            elapse = timeit.default_timer() - start_time
             # print elapse
-            # lst_time.append(elapse)
+            lst_time.append(elapse)
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
             lst_acc.append(float(correct) / len(testLabels))
@@ -509,6 +515,7 @@ def selfRunClassifier():
         lst_time = []
         lst_acc = []
         for i in range(5):
+            start_time = timeit.default_timer()
             rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
             trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
             rawValidationData = samples.loadDataFile("facedata/facedatatrain", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
@@ -518,7 +525,8 @@ def selfRunClassifier():
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            elapse = timeit.default_timer() - start_time
             lst_time.append(elapse)
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
@@ -550,6 +558,7 @@ def selfRunClassifier():
         lst_time = []
         lst_acc = []
         for i in range(5):
+            start_time = timeit.default_timer()
             featureFunction = enhancedFeatureExtractorDigit
             legalLabels = range(2)
             classifier = Knear.KnearestNeighbourClassifier(legalLabels)
@@ -562,7 +571,8 @@ def selfRunClassifier():
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+            elapse = timeit.default_timer() - start_time
             lst_time.append(elapse)
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)

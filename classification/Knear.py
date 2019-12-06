@@ -23,14 +23,14 @@ class KnearestNeighbourClassifier(classificationMethod.ClassificationMethod):
 
   def train(self, trainingData, trainingLabels, validationData, validationLabels):
 
-    start_time = timeit.default_timer()
+    # start_time = timeit.default_timer()
     self.features = list(set([ f for datum in trainingData for f in datum.keys() ]));
     self.label = trainingLabels
     self.train = trainingData
     # self.length = len(trainingData[0])
 
-    elapsed = timeit.default_timer() - start_time
-    return elapsed
+    # elapsed = timeit.default_timer() - start_time
+    # return elapsed
 
 
     # counter = util.Counter()

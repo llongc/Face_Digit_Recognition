@@ -8,6 +8,7 @@
 
 # Perceptron implementation
 import util
+import random
 PRINT = True
 
 class PerceptronClassifier:
@@ -26,8 +27,8 @@ class PerceptronClassifier:
       self.weights[label] = util.Counter() # this is the data-structure you should use
 
   def setWeights(self, weights):
-    assert len(weights) == len(self.legalLabels);
-    self.weights == weights;
+    assert len(weights) == len(self.legalLabels)
+    self.weights == weights
       
   def train( self, trainingData, trainingLabels, validationData, validationLabels ):
     """
@@ -45,11 +46,74 @@ class PerceptronClassifier:
     # DO NOT ZERO OUT YOUR WEIGHTS BEFORE STARTING TRAINING, OR
     # THE AUTOGRADER WILL LIKELY DEDUCT POINTS.
     
+    # for i in range(len(trainingData)):
+    # i = 0, 1, ...len of data
+    # for j in self.features:
+    # j = area01, area02,.......
+    # print trainingData[i][j]
+
+    # Initialize score and bias:
+    Score = util.Counter()
+    Bias = util.Counter()
+    fScore = 0
+    fBias = random.randint(-1, 1)
+    #print "fbias is ", fBias
+
+    # Initialize weights with random number between -1 and 1:
+    
+    for b in self.features:
+        for label in self.legalLabels:
+          self.weights[label][b] = random.randint(-1,1)
+          
+
+    # Initialize weights for digits with random number between -1 and 1:
+    for label in self.legalLabels:
+        Bias[label] = random.randint(-1, 1)
+        Score[label] = 0
+    
+    # print "dataSize", len(trainingData)
     for iteration in range(self.max_iterations):
       print "Starting iteration ", iteration, "..."
-      for i in range(len(trainingData)):
-          "*** YOUR CODE HERE ***"
-          util.raiseNotDefined()
+      if len(self.legalLabels) == 2:
+        for i in range(len(trainingData)):
+          for j in self.features:
+            fScore += trainingData[i][j] * self.weights[1][j]
+          # print "fScore", fScore
+          fScore += fBias
+          # print "fScore", fScore
+          # print "label", trainingLabels[i]
+          if fScore >= 0 and trainingLabels[i] == 0:
+            fBias -= 1
+            for x in self.features:
+              self.weights[1][x] = self.weights[1][x] - trainingData[i][x]
+            fScore = 0
+          elif fScore < 0 and trainingLabels[i] == 1:
+            fBias += 1
+            for y in self.features:
+              self.weights[1][y] = self.weights[1][y] + trainingData[i][y]
+            fScore = 0
+      else:
+        for i in range(len(trainingData)):
+          for label in self.legalLabels:
+            for g in self.features:  
+              Score[label] += trainingData[i][g] * self.weights[label][g]
+
+          
+          for label in self.legalLabels:
+            Score[label] += Bias[label]
+
+          actual = trainingLabels[i]
+          maxScore = Score.argMax()
+          if maxScore != actual:
+            Bias[actual] = Bias[actual] + 1
+            Bias[maxScore] = Bias[maxScore] - 1
+            for b in self.features:
+              
+              self.weights[maxScore][b] = self.weights[maxScore][b] - trainingData[i][b]
+              self.weights[actual][b] = self.weights[actual][b] + trainingData[i][b]
+            for label in self.legalLabels:
+              Score[label] = 0
+
     
   def classify(self, data ):
     """

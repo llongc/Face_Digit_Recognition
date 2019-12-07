@@ -9,19 +9,19 @@
 # This file contains feature extraction methods and harness
 # code for data classification
 
-import Knear
+#import Knear
 import naiveBayes
 import perceptron
 import mira
 import samples
 import sys
 import util
-import numpy as np
-import timeit
+#import numpy as np
+#import timeit
 # from sklearn.metrics import accuracy_score
 
 
-TEST_SET_SIZE = 1 # It is indeed the percent for test dataset, default is 10%
+TEST_SET_SIZE = 100 # It is indeed the percent for test dataset, default is 10%
 
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
@@ -586,7 +586,7 @@ def selfRunClassifier():
 
 if __name__ == '__main__':
   # Read input
-  # args, options = readCommand( sys.argv[1:] )
+  args, options = readCommand( sys.argv[1:] )
   # Run classifier
-  # runClassifier(args, options)
-  selfRunClassifier()
+  runClassifier(args, options)
+  #selfRunClassifier()

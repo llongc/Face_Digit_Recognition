@@ -9,15 +9,15 @@
 # This file contains feature extraction methods and harness
 # code for data classification
 
-#import Knear
+import Knear
 import naiveBayes
 import perceptron
 import mira
 import samples
 import sys
 import util
-#import numpy as np
-#import timeit
+import numpy as np
+import timeit
 # from sklearn.metrics import accuracy_score
 
 
@@ -586,7 +586,7 @@ def selfRunClassifier():
 
 if __name__ == '__main__':
   # Read input
-  args, options = readCommand( sys.argv[1:] )
+  # args, options = readCommand( sys.argv[1:] )
   # Run classifier
-  runClassifier(args, options)
-  #selfRunClassifier()
+  # runClassifier(args, options)
+  selfRunClassifier()

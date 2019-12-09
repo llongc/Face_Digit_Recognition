@@ -17,7 +17,6 @@ import samples
 import sys
 import util
 import numpy as np
-import timeit
 # from sklearn.metrics import accuracy_score
 
 
@@ -366,12 +365,11 @@ def runClassifier(args, options):
   trainingData = map(featureFunction, rawTrainingData)
   validationData = map(featureFunction, rawValidationData)
   testData = map(featureFunction, rawTestData)
-  print len(trainingData)
-  print len(validationData)
-  print len(testData)
+
   # Conduct training and testing
   print "Training..."
   elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+  print elapse
   print "Validating..."
   guesses = classifier.classify(validationData)
   correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
@@ -597,8 +595,7 @@ def selfRunClassifier():
             trainingData = map(featureFunction, rawTrainingData)
             validationData = map(featureFunction, rawValidationData)
             testData = map(featureFunction, rawTestData)
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
+            elapse = classifier.train(trainingData, trainingLabels, validationData, validationLabels)
             lst_time.append(elapse)
             guesses = classifier.classify(testData)
             correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)

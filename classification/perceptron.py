@@ -14,7 +14,7 @@ PRINT = True
 class PerceptronClassifier:
   """
   Perceptron classifier.
-  
+
   Note that the variable 'datum' in this code refers to a counter of features
   (not to a raw samples.Datum).
   """
@@ -29,19 +29,19 @@ class PerceptronClassifier:
   def setWeights(self, weights):
     assert len(weights) == len(self.legalLabels)
     self.weights == weights
-      
+
   def train( self, trainingData, trainingLabels, validationData, validationLabels ):
     """
     The training loop for the perceptron passes through the training data several
     times and updates the weight vector for each label based on classification errors.
-    See the project description for details. 
-    
-    Use the provided self.weights[label] data structure so that 
+    See the project description for details.
+
+    Use the provided self.weights[label] data structure so that
     the classify method works correctly. Also, recall that a
     datum is a counter from features to values for those features
     (and thus represents a vector a values).
     """
-    
+
     self.features = trainingData[0].keys() # could be useful later
     # DO NOT ZERO OUT YOUR WEIGHTS BEFORE STARTING TRAINING, OR
     # THE AUTOGRADER WILL LIKELY DEDUCT POINTS.
@@ -51,13 +51,13 @@ class PerceptronClassifier:
     Bias = util.Counter()
     fScore = 0
     fBias = random.randint(-1, 1)
-    
+
 
     # Initialize weights with random number between -1 and 1:
     for b in self.features:
         for label in self.legalLabels:
           self.weights[label][b] = random.randint(-1,1)
-        
+
     # Initialize the bias weights for with random number between -1 and 1:
     for label in self.legalLabels:
         Bias[label] = random.randint(-1, 1)
@@ -86,12 +86,12 @@ class PerceptronClassifier:
         # Operation for digits:
         for i in range(len(trainingData)):
           for label in self.legalLabels:
-            for g in self.features:  
+            for g in self.features:
               Score[label] += trainingData[i][g] * self.weights[label][g]
           # Addding the bias weights:
           for label in self.legalLabels:
             Score[label] += Bias[label]
-          # Updating the weights for digits:  
+          # Updating the weights for digits:
           actual = trainingLabels[i]
           maxScore = Score.argMax()
           if maxScore != actual:
@@ -103,13 +103,13 @@ class PerceptronClassifier:
             for label in self.legalLabels:
               Score[label] = 0
 
-    
+
   def classify(self, data ):
     """
     Classifies each datum as the label that most closely matches the prototype vector
     for that label.  See the project description for details.
-    
-    Recall that a datum is a util.counter... 
+
+    Recall that a datum is a util.counter...
     """
     guesses = []
     for datum in data:
@@ -119,7 +119,7 @@ class PerceptronClassifier:
       guesses.append(vectors.argMax())
     return guesses
 
-  
+
   def findHighWeightFeatures(self, label):
     """
     Returns a list of the 100 features with the greatest weight for some label
@@ -130,4 +130,3 @@ class PerceptronClassifier:
     util.raiseNotDefined()
 
     return featuresWeights
-

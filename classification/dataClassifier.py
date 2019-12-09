@@ -410,7 +410,6 @@ def selfRunClassifier():
 
 
     # NaiveBayes part
-<<<<<<< HEAD
     # print "Training by using NaiveBayes Algorithm"
     # featureFunction = enhancedFeatureExtractorDigit
     # legalLabels = range(10)
@@ -449,7 +448,6 @@ def selfRunClassifier():
 
     # Perceptron algorithm
     # print "Training by using Perceptron Algorithm"
-=======
     print "Training by using NaiveBayes Algorithm"
     featureFunction = enhancedFeatureExtractorDigit
     legalLabels = range(10)
@@ -495,7 +493,6 @@ def selfRunClassifier():
     # K nearest neighbour algorithm
     print "Training by using KNN Algorithm"
     print "Only use 10% test set"
->>>>>>> parent of 7be1fe2... Merge branch 'master' of https://github.com/llongc/Face_Digit_Recognition
     # featureFunction = enhancedFeatureExtractorDigit
     # legalLabels = range(10)
     # classifier = perceptron.PerceptronClassifier(legalLabels, 3)

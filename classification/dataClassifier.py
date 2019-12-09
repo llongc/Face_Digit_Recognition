@@ -411,122 +411,120 @@ def selfRunClassifier():
 
 
     # NaiveBayes part
-    print "Training by using NaiveBayes Algorithm"
-    featureFunction = enhancedFeatureExtractorDigit
-    legalLabels = range(10)
-    classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
-    lst_avg_time = []
-    lst_avg_acc = []
-    lst_std_acc = []
-    for percent in data_percent:
-        print "training set size:\t" + str(percent)+"%"
-        # print "setSmoothing: k value is ", classifier.k
-        lst_time = []
-        lst_acc = []
-        for i in range(5):
-            start_time = timeit.default_timer()
-            rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
-            rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            validationLabels = samples.loadLabelsFile("digitdata/validationlabels", TEST_SET_SIZE)
-            rawTestData = samples.loadDataFile("digitdata/testimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            testLabels = samples.loadLabelsFile("digitdata/testlabels", TEST_SET_SIZE)
-            # print "Extracting features..."
-            trainingData = map(featureFunction, rawTrainingData)
-            validationData = map(featureFunction, rawValidationData)
-            testData = map(featureFunction, rawTestData)
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
-            lst_time.append(elapse)
-            guesses = classifier.classify(testData)
-            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-            lst_acc.append(float(correct) / len(testLabels))
-        print '--------------------------------------------------------------'
-        lst_avg_time.append(np.mean(lst_time))
-        lst_avg_acc.append(np.mean(lst_acc))
-        lst_std_acc.append(np.std(lst_acc))
-    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
-
-    # Perceptron algorithm
-    print "Training by using Perceptron Algorithm"
-    featureFunction = enhancedFeatureExtractorDigit
-    legalLabels = range(10)
-    classifier = perceptron.PerceptronClassifier(legalLabels)
-    lst_avg_time = []
-    lst_avg_acc = []
-    lst_std_acc = []
-    for percent in data_percent:
-        print "training set size:\t" + str(percent)+"%"
-        # print "setSmoothing: k value is ", classifier.k
-        lst_time = []
-        lst_acc = []
-        for i in range(5):
-            start_time = timeit.default_timer()
-            rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
-            rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            validationLabels = samples.loadLabelsFile("digitdata/validationlabels", TEST_SET_SIZE)
-            rawTestData = samples.loadDataFile("digitdata/testimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            testLabels = samples.loadLabelsFile("digitdata/testlabels", TEST_SET_SIZE)
-            # print "Extracting features..."
-            trainingData = map(featureFunction, rawTrainingData)
-            validationData = map(featureFunction, rawValidationData)
-            testData = map(featureFunction, rawTestData)
-
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
-            # print elapse
-            lst_time.append(elapse)
-            guesses = classifier.classify(testData)
-            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-            lst_acc.append(float(correct) / len(testLabels))
-        print '--------------------------------------------------------------'
-        lst_avg_time.append(np.mean(lst_time))
-        lst_avg_acc.append(np.mean(lst_acc))
-        lst_std_acc.append(np.std(lst_acc))
-    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
-
-    # K nearest neighbour algorithm
-    print "Training by using KNN Algorithm"
-    print "Only use 10% test set"
+    # print "Training by using NaiveBayes Algorithm"
     # featureFunction = enhancedFeatureExtractorDigit
     # legalLabels = range(10)
-    # classifier = Knear.KnearestNeighbourClassifier(legalLabels)
-    lst_avg_time = []
-    lst_avg_acc = []
-    lst_std_acc = []
-    for percent in data_percent:
-        print "training set size:\t" + str(percent)+"%"
-        lst_time = []
-        lst_acc = []
-        for i in range(5):
-            start_time = timeit.default_timer()
-            featureFunction = enhancedFeatureExtractorDigit
-            legalLabels = range(10)
-            classifier = Knear.KnearestNeighbourClassifier(legalLabels)
-            rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
-            rawValidationData = samples.loadDataFile("digitdata/validationimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            validationLabels = samples.loadLabelsFile("digitdata/validationlabels", 10)
-            rawTestData = samples.loadDataFile("digitdata/testimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
-            testLabels = samples.loadLabelsFile("digitdata/testlabels", 10)
-            # print "Extracting features..."
-            trainingData = map(featureFunction, rawTrainingData)
-            validationData = map(featureFunction, rawValidationData)
-            testData = map(featureFunction, rawTestData)
+    # classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
+    # lst_avg_time = []
+    # lst_avg_acc = []
+    # lst_std_acc = []
+    # for percent in data_percent:
+    #     print "training set size:\t" + str(percent)+"%"
+    #     # print "setSmoothing: k value is ", classifier.k
+    #     lst_time = []
+    #     lst_acc = []
+    #     for i in range(5):
+    #         start_time = timeit.default_timer()
+    #         rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
+    #         rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         validationLabels = samples.loadLabelsFile("digitdata/validationlabels", TEST_SET_SIZE)
+    #         rawTestData = samples.loadDataFile("digitdata/testimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         testLabels = samples.loadLabelsFile("digitdata/testlabels", TEST_SET_SIZE)
+    #         # print "Extracting features..."
+    #         trainingData = map(featureFunction, rawTrainingData)
+    #         validationData = map(featureFunction, rawValidationData)
+    #         testData = map(featureFunction, rawTestData)
+    #         classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    #         elapse = timeit.default_timer() - start_time
+    #         lst_time.append(elapse)
+    #         guesses = classifier.classify(testData)
+    #         correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    #         lst_acc.append(float(correct) / len(testLabels))
+    #     print '--------------------------------------------------------------'
+    #     lst_avg_time.append(np.mean(lst_time))
+    #     lst_avg_acc.append(np.mean(lst_acc))
+    #     lst_std_acc.append(np.std(lst_acc))
+    # analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
-            # print elapse
-            lst_time.append(elapse)
-            guesses = classifier.classify(testData)
-            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-            lst_acc.append(float(correct) / len(testLabels))
-        print '--------------------------------------------------------------'
-        lst_avg_time.append(np.mean(lst_time))
-        lst_avg_acc.append(np.mean(lst_acc))
-        lst_std_acc.append(np.std(lst_acc))
-    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+    # Perceptron algorithm
+    # print "Training by using Perceptron Algorithm"
+    # featureFunction = enhancedFeatureExtractorDigit
+    # legalLabels = range(10)
+    # classifier = perceptron.PerceptronClassifier(legalLabels, 3)
+    # lst_avg_time = []
+    # lst_avg_acc = []
+    # lst_std_acc = []
+    # for percent in data_percent:
+    #     print "training set size:\t" + str(percent)+"%"
+    #     # print "setSmoothing: k value is ", classifier.k
+    #     lst_time = []
+    #     lst_acc = []
+    #     for i in range(5):
+    #         start_time = timeit.default_timer()
+    #         rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
+    #         rawValidationData = samples.loadDataFile("digitdata/validationimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         validationLabels = samples.loadLabelsFile("digitdata/validationlabels", TEST_SET_SIZE)
+    #         rawTestData = samples.loadDataFile("digitdata/testimages", TEST_SET_SIZE,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         testLabels = samples.loadLabelsFile("digitdata/testlabels", TEST_SET_SIZE)
+    #         # print "Extracting features..."
+    #         trainingData = map(featureFunction, rawTrainingData)
+    #         validationData = map(featureFunction, rawValidationData)
+    #         testData = map(featureFunction, rawTestData)
+    #
+    #         classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    #         elapse = timeit.default_timer() - start_time
+    #         # print elapse
+    #         lst_time.append(elapse)
+    #         guesses = classifier.classify(testData)
+    #         correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    #         lst_acc.append(float(correct) / len(testLabels))
+    #     print '--------------------------------------------------------------'
+    #     lst_avg_time.append(np.mean(lst_time))
+    #     lst_avg_acc.append(np.mean(lst_acc))
+    #     lst_std_acc.append(np.std(lst_acc))
+    # analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+
+    # K nearest neighbour algorithm
+    # print "Training by using KNN Algorithm"
+    # print "Only use 10% test set"
+    #
+    # lst_avg_time = []
+    # lst_avg_acc = []
+    # lst_std_acc = []
+    # for percent in data_percent:
+    #     print "training set size:\t" + str(percent)+"%"
+    #     lst_time = []
+    #     lst_acc = []
+    #     for i in range(5):
+    #         start_time = timeit.default_timer()
+    #         featureFunction = enhancedFeatureExtractorDigit
+    #         legalLabels = range(10)
+    #         classifier = Knear.KnearestNeighbourClassifier(legalLabels)
+    #         rawTrainingData = samples.loadDataFile("digitdata/trainingimages", percent,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         trainingLabels = samples.loadLabelsFile("digitdata/traininglabels", percent)
+    #         rawValidationData = samples.loadDataFile("digitdata/validationimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         validationLabels = samples.loadLabelsFile("digitdata/validationlabels", 10)
+    #         rawTestData = samples.loadDataFile("digitdata/testimages", 10,DIGIT_DATUM_WIDTH,DIGIT_DATUM_HEIGHT)
+    #         testLabels = samples.loadLabelsFile("digitdata/testlabels", 10)
+    #         # print "Extracting features..."
+    #         trainingData = map(featureFunction, rawTrainingData)
+    #         validationData = map(featureFunction, rawValidationData)
+    #         testData = map(featureFunction, rawTestData)
+    #
+    #         classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    #         elapse = timeit.default_timer() - start_time
+    #         # print elapse
+    #         lst_time.append(elapse)
+    #         guesses = classifier.classify(testData)
+    #         correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    #         lst_acc.append(float(correct) / len(testLabels))
+    #     print '--------------------------------------------------------------'
+    #     lst_avg_time.append(np.mean(lst_time))
+    #     lst_avg_acc.append(np.mean(lst_acc))
+    #     lst_std_acc.append(np.std(lst_acc))
+    # analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
 
 
@@ -536,45 +534,48 @@ def selfRunClassifier():
     print ""
     print "=================Faces===================="
     # NaiveBayes Algorithm
-    print "Training by using NaiveBayes Algorithm"
-    featureFunction = enhancedFeatureExtractorDigit
-    legalLabels = range(2)
-    classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
-    lst_avg_time = []
-    lst_avg_acc = []
-    lst_std_acc = []
-    for percent in data_percent:
-        print "training set size:\t" + str(percent)+"%"
-        lst_time = []
-        lst_acc = []
-        for i in range(5):
-            start_time = timeit.default_timer()
-            rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
-            rawValidationData = samples.loadDataFile("facedata/facedatatrain", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", TEST_SET_SIZE)
-            rawTestData = samples.loadDataFile("facedata/facedatatest", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", TEST_SET_SIZE)
-            trainingData = map(featureFunction, rawTrainingData)
-            validationData = map(featureFunction, rawValidationData)
-            testData = map(featureFunction, rawTestData)
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
-            lst_time.append(elapse)
-            guesses = classifier.classify(testData)
-            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-            lst_acc.append(float(correct) / len(testLabels))
-        print '--------------------------------------------------------------'
-        lst_avg_time.append(np.mean(lst_time))
-        lst_avg_acc.append(np.mean(lst_acc))
-        lst_std_acc.append(np.std(lst_acc))
-    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+    # print "Training by using NaiveBayes Algorithm"
+    # # featureFunction = enhancedFeatureExtractorDigit
+    # # legalLabels = range(2)
+    # # classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
+    # lst_avg_time = []
+    # lst_avg_acc = []
+    # lst_std_acc = []
+    # for percent in data_percent:
+    #     print "training set size:\t" + str(percent)+"%"
+    #     lst_time = []
+    #     lst_acc = []
+    #     for i in range(5):
+    #         featureFunction = enhancedFeatureExtractorDigit
+    #         legalLabels = range(2)
+    #         classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
+    #         start_time = timeit.default_timer()
+    #         rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
+    #         rawValidationData = samples.loadDataFile("facedata/facedatatrain", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", TEST_SET_SIZE)
+    #         rawTestData = samples.loadDataFile("facedata/facedatatest", TEST_SET_SIZE,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", TEST_SET_SIZE)
+    #         trainingData = map(featureFunction, rawTrainingData)
+    #         validationData = map(featureFunction, rawValidationData)
+    #         testData = map(featureFunction, rawTestData)
+    #         classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    #         elapse = timeit.default_timer() - start_time
+    #         lst_time.append(elapse)
+    #         guesses = classifier.classify(testData)
+    #         correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    #         lst_acc.append(float(correct) / len(testLabels))
+    #     print '--------------------------------------------------------------'
+    #     lst_avg_time.append(np.mean(lst_time))
+    #     lst_avg_acc.append(np.mean(lst_acc))
+    #     lst_std_acc.append(np.std(lst_acc))
+    # analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
     # Perceptron Algorithm
     print "Training by using Perceptron Algorithm"
-    featureFunction = enhancedFeatureExtractorDigit
-    legalLabels = range(2)
-    classifier = perceptron.PerceptronClassifier(legalLabels)
+    # featureFunction = enhancedFeatureExtractorDigit
+    # legalLabels = range(2)
+    # classifier = perceptron.PerceptronClassifier(legalLabels, 3)
     lst_avg_time = []
     lst_avg_acc = []
     lst_std_acc = []
@@ -583,6 +584,9 @@ def selfRunClassifier():
         lst_time = []
         lst_acc = []
         for i in range(5):
+            featureFunction = enhancedFeatureExtractorDigit
+            legalLabels = range(2)
+            classifier = perceptron.PerceptronClassifier(legalLabels, 3)
             start_time = timeit.default_timer()
             rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
             trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
@@ -609,49 +613,49 @@ def selfRunClassifier():
 
 
 
-    # Knn Algorithm
-    print "Training by using KNN Algorithm"
-    print "Only use 10% test set"
-    # featureFunction = enhancedFeatureExtractorDigit
-    # legalLabels = range(2)
-    # classifier = Knear.KnearestNeighbourClassifier(legalLabels)
-    lst_avg_time = []
-    lst_avg_acc = []
-    lst_std_acc = []
-    for percent in data_percent:
-        print "training set size:\t" + str(percent)+"%"
-        lst_time = []
-        lst_acc = []
-        for i in range(5):
-            start_time = timeit.default_timer()
-            featureFunction = enhancedFeatureExtractorDigit
-            legalLabels = range(2)
-            classifier = Knear.KnearestNeighbourClassifier(legalLabels)
-            rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
-            rawValidationData = samples.loadDataFile("facedata/facedatatrain", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", 10)
-            rawTestData = samples.loadDataFile("facedata/facedatatest", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
-            testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", 10)
-            trainingData = map(featureFunction, rawTrainingData)
-            validationData = map(featureFunction, rawValidationData)
-            testData = map(featureFunction, rawTestData)
-            classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-            elapse = timeit.default_timer() - start_time
-            lst_time.append(elapse)
-            guesses = classifier.classify(testData)
-            correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-            lst_acc.append(float(correct) / len(testLabels))
-        print '--------------------------------------------------------------'
-        lst_avg_time.append(np.mean(lst_time))
-        lst_avg_acc.append(np.mean(lst_acc))
-        lst_std_acc.append(np.std(lst_acc))
-    analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
+    # # Knn Algorithm
+    # print "Training by using KNN Algorithm"
+    # print "Only use 10% test set"
+    # # featureFunction = enhancedFeatureExtractorDigit
+    # # legalLabels = range(2)
+    # # classifier = Knear.KnearestNeighbourClassifier(legalLabels)
+    # lst_avg_time = []
+    # lst_avg_acc = []
+    # lst_std_acc = []
+    # for percent in data_percent:
+    #     print "training set size:\t" + str(percent)+"%"
+    #     lst_time = []
+    #     lst_acc = []
+    #     for i in range(5):
+    #         start_time = timeit.default_timer()
+    #         featureFunction = enhancedFeatureExtractorDigit
+    #         legalLabels = range(2)
+    #         classifier = Knear.KnearestNeighbourClassifier(legalLabels)
+    #         rawTrainingData = samples.loadDataFile("facedata/facedatatrain", percent,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         trainingLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", percent)
+    #         rawValidationData = samples.loadDataFile("facedata/facedatatrain", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         validationLabels = samples.loadLabelsFile("facedata/facedatatrainlabels", 10)
+    #         rawTestData = samples.loadDataFile("facedata/facedatatest", 10,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
+    #         testLabels = samples.loadLabelsFile("facedata/facedatatestlabels", 10)
+    #         trainingData = map(featureFunction, rawTrainingData)
+    #         validationData = map(featureFunction, rawValidationData)
+    #         testData = map(featureFunction, rawTestData)
+    #         classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    #         elapse = timeit.default_timer() - start_time
+    #         lst_time.append(elapse)
+    #         guesses = classifier.classify(testData)
+    #         correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    #         lst_acc.append(float(correct) / len(testLabels))
+    #     print '--------------------------------------------------------------'
+    #     lst_avg_time.append(np.mean(lst_time))
+    #     lst_avg_acc.append(np.mean(lst_acc))
+    #     lst_std_acc.append(np.std(lst_acc))
+    # analysis(lst_avg_time, lst_avg_acc, lst_std_acc)
 
 
 if __name__ == '__main__':
   # Read input
-  # args, options = readCommand( sys.argv[1:] )
+  args, options = readCommand( sys.argv[1:] )
   # Run classifier
-  # runClassifier(args, options)
-  selfRunClassifier()
+  runClassifier(args, options)
+  # selfRunClassifier()

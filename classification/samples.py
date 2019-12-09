@@ -108,8 +108,8 @@ def loadDataFile(filename, percent ,width,height):
   fin.reverse()
   items = []
   n = int(float(percent) / 100 * (len(fin) / height))
-  # print "============"
-  # print n, len(fin)
+  print "============"
+  print n, len(fin)
   selectnum = len(fin) / height
   randIndex = random.sample(range(selectnum), n)
   randIndex.sort()
